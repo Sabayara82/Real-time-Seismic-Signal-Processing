@@ -1,21 +1,49 @@
 # Real-Time-Seismic-Signal-Processing-for-Earthquake-Monitoring-
 Real-Time Seismic Signal Processing for Earthquake Monitoring 
 
+## Project Structure
 
-seismic-accelerator/
-├── matlab/
-│   └── fir_filter_cascade.m       --> multi-stage filter design + latency measurement
-├── python/
-│   ├── pipeline_sim.py            --> circular buffer + pipeline stage simulator
-│   └── hazard_analysis.py        --> data hazards, initiation interval
-├── cython/
-│   ├── mac_loop.pyx               --> optimized mac kernel
-│   └── setup.py                   --> build script
-├── analysis/
-│   ├── precision_test.py          --> float32 vs fixed-point Q15/Q31 comparison
-│   └── amdahls_law.py             --> speedup ceiling plots
-├── data/
-│   └── synthetic_seismic.py      --> generates test signals (P-wave, S-wave, noise)
-│   └── synthetic_seismic.py
-└── output/
-    └── figures/                   --> output plots exported from simulations
+### matlab
+```
+matlab/
+── fir_filter_cascade.m
+```
+Multi-stage FIR filter design and latency measurement.
+
+### python
+```
+python/
+── pipeline_sim.py
+── hazard_analysis.py
+```
+Pipeline simulator with circular buffers and hazard analysis.
+
+### cython
+```
+cython/
+── mac_loop.pyx
+── setup.py
+```
+Optimized multiply-accumulate kernel and build script.
+
+### analysis
+```
+analysis/
+── precision_test.py
+── amdahls_law.py
+```
+Precision comparison and Amdahl’s Law speedup analysis.
+
+### data
+```
+data/
+── synthetic_seismic.py
+```
+Generates synthetic seismic signals (P-wave, S-wave, noise).
+
+### report
+```
+report/
+── figures/
+```
+Figures exported from simulations.
