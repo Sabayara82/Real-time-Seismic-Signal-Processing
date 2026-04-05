@@ -6,15 +6,14 @@ import os
 
 DATA_CLIENT = "EARTHSCOPE"
 
-QUAKE_TIME = UTCDateTime("2011-03-11T05:46:24")
-QUAKE_LABEL = "Tonhoku_2011"
+QUAKE_TIME = UTCDateTime("2004-12-26T00:58:53")
+QUAKE_LABEL = "Sumatra_2004"
 
-PRE_QUAKE_SECONDS  = 10000   
+PRE_QUAKE_SECONDS  = 10000 
 POST_QUAKE_SECONDS = 50000 
 
-# ANMO (Albuquerque, New Mexico, USA)
-NETWORK  = "IU"
-STATION  = "ANMO"
+NETWORK  = "II"
+STATION  = "DGAR"
 LOCATION = "00"
 CHANNEL  = "BH*"   # fetches all three axis data
 
