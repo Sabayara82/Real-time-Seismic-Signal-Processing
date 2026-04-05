@@ -9,7 +9,7 @@ cimport numpy as np
 DTYPE = np.float64
 ctypedef np.float64_t DTYPE_t
 
-# backing store is 2*N based on email exchange w prof
+# backing store is 2*N based on email w prof
 # lets get_aligned always return a contiguous slice without copying
 cdef class DoubleBuffer:
 
@@ -25,7 +25,6 @@ cdef class DoubleBuffer:
         self.num_samples = capacity
         self.pointer = 0
         self.count = 0
-        # FIX: allocate 2*num_samples (was only num_samples, push would go OOB)
         self.buffer = np.zeros(2 * self.num_samples, dtype=DTYPE)
 
     #write sample x into both halves
@@ -53,7 +52,6 @@ cdef class EnergyBuffer:
         self.count = 0
         self.buffer = np.zeros(self.capacity, dtype=DTYPE)
 
-    # FIX: was cdef (C-only, invisible to pipeline), needs to be cpdef
     cpdef void push(self, double x):
         self.buffer[self.pointer] = x
         self.pointer = (self.pointer + 1) % self.capacity
@@ -82,7 +80,6 @@ the filter is designed in the frequency domain
 # h: ndarray, shape(N,), dtype float64
 # the filter's impulse response (coefficients)
 cpdef gen_BPF(double f_upper, double f_lower, double fs, int N):
-    # FIX: all cdef declarations must come before any executable statements in Cython
     cdef np.ndarray H = np.zeros(N, dtype=complex)
     cdef np.ndarray f_content = np.fft.fftfreq(N, 1.0 / fs)
     cdef np.ndarray h
@@ -99,8 +96,6 @@ cpdef gen_BPF(double f_upper, double f_lower, double fs, int N):
 
     return h
 
-
-#TODO: accelerator pipeline simulation
 #Main accelerator pipeline simulation loop
 def run_accelerator(np.ndarray[DTYPE_t, ndim=1] s_measured, int NL, int Ns, int Ne, int N, int T,
                     int num_acc_stages, np.ndarray[DTYPE_t, ndim=1] w1,
@@ -118,7 +113,6 @@ def run_accelerator(np.ndarray[DTYPE_t, ndim=1] s_measured, int NL, int Ns, int 
     eq_start = sample index of injected earthquake
     Max_steps = maximum simulation steps
     """
-    # FIX: all cdef declarations moved to top of function (Cython requires this)
     cdef int current_step = 0
     cdef int signal_idx = 0
     cdef int stall_count = 0
@@ -221,7 +215,7 @@ def run_accelerator(np.ndarray[DTYPE_t, ndim=1] s_measured, int NL, int Ns, int 
         if (trigger_tripped == 1):
             break           
 
-    # FIX: return was inside the while loop (indented too deep)
+    
     return {
         'total_steps' : current_step,
         'stalled_cycles' : stall_count,
@@ -296,7 +290,8 @@ def run_reference_cpu(np.ndarray[DTYPE_t, ndim=1] s_measured, int NL, int Ns, in
         lta_view[lta_ptr] = smoothed_val
         lta_ptr = (lta_ptr + 1) % NL
 
-        total_ticks += 8  # load/store + comparison overhead
+        # load/store + comparison overhead
+        total_ticks += 8  
 
         if t == eq_start:
             injection_tick = total_ticks
